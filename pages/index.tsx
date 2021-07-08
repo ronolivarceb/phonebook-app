@@ -1,12 +1,14 @@
 import Head from 'next/head'
-import { Row, Col, Layout } from 'antd'
+import { Drawer, Row, Col, Layout } from 'antd'
 import MobileCard from '../components/mobile-card'
 import { GetStaticProps } from 'next'
-import {IMAGE_PATH, SERVER_URL} from '../config/constants'
+import { SERVER_URL } from '../config/constants'
+import { useState } from 'react'
+import DrawerDetails from '../components/drawer-details'
 
 const { Header, Content } = Layout
 
-export const getStaticProps :GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const res = await fetch(`${SERVER_URL}/phones`)
   const data = await res.json()
   return {
@@ -15,7 +17,8 @@ export const getStaticProps :GetStaticProps = async () => {
 }
 
 export default function Home({ phones }: any) {
-  // console.log(phones)
+  const [isDrawerVisible, setDrawerVisible] = useState(false)
+  const [activePhone, setActivePhone] = useState(phones[0])
   return (
     <>
       <Head>
@@ -28,11 +31,25 @@ export default function Home({ phones }: any) {
         <Content className="main-content-container">
           <Row gutter={[18, 18]} justify="space-around">
             {phones.map((phone: any) => (
-              <Col>
-                <MobileCard key={phone.id} image={`${IMAGE_PATH}${phone.imageFileName}`} name={phone.name} manufacturer={phone.manufacturer} />
+              <Col
+                onClick={() => {
+                  setActivePhone(phone)
+                  setDrawerVisible(true)
+                }}
+              >
+                <MobileCard phone={phone} key={phone.id} />
               </Col>
             ))}
           </Row>
+          <Drawer
+            width="80vw"
+            placement="right"
+            closable={true}
+            onClose={() => setDrawerVisible(false)}
+            visible={isDrawerVisible}
+          >
+            <DrawerDetails phone={activePhone} />
+          </Drawer>
         </Content>
       </Layout>
     </>
