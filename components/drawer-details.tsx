@@ -18,7 +18,7 @@ const DrawerDetails = (props: { phone: any }) => {
 
       <Row>
         <Col span={24}>
-          <Descriptions title="Product Details" bordered column={1}>
+          <Descriptions title="Product Details" bordered column={1} layout="vertical">
             <Descriptions.Item label="Name">
               {props.phone.name}
             </Descriptions.Item>
